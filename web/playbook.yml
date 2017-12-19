@@ -1,0 +1,46 @@
+- hosts: all
+  vars:
+    http_port: 80
+  tasks:
+    - name: Install packages
+      apt:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - apache2
+        - php
+        - mariadb-server
+        - php-mysql
+      become: yes
+
+    - name: Enable httpd
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      become: yes
+
+    - name: Copy the latest version of Wordpress to the server.
+      unarchive:
+        src: https://wordpress.org/latest.tar.gz
+        dest: /var/www/html
+        remote_src: yes
+        owner: www-data
+        group: www-data
+        extra_opts: --strip-components=1
+      become: yes
+
+    - name: Get salts for the wordpress configuration file
+      uri:
+        url: https://api.wordpress.org/secret-key/1.1/salt/
+        return_content: yes
+      register: salt
+      delegate_to: localhost
+      run_once: yes
+
+  handlers:
+    - name: restart httpd
+      service:
+        name: apache2
+        state: restarted
+      become: yes
