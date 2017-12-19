@@ -12,7 +12,6 @@ Vagrant.configure("2") do |config|
             vbox.cpus = 1
             vbox.memory = 512
         end
-        machine.vm.provision "file", source: "dhcp/files", destination: "$HOME/dhcp"
         machine.vm.provision "shell", path: "dhcp/script"
     end
 

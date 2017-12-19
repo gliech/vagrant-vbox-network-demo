@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # copy the config files
-cp /home/vagrant/dhcp/default /etc/default/isc-dhcp-server
+cp /vagrant/dhcp/files/default /etc/default/isc-dhcp-server
 chown root:root /etc/default/isc-dhcp-server
 chmod 644 /etc/default/isc-dhcp-server
 
-cp /home/vagrant/dhcp/config /etc/dhcp/dhcpd.conf
+cp /vagrant/dhcp/files/config /etc/dhcp/dhcpd.conf
 chown root:root /etc/dhcp/dhcpd.conf
 chmod 644 /etc/dhcp/dhcpd.conf
 
