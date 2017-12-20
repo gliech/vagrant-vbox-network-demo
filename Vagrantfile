@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.define "linux-client" do |machine|
         machine.vm.hostname = "linux-client"
-        machine.vm.box = "generic/fedora26"
+        machine.vm.box = "generic/fedora27"
         machine.vm.network "private_network", type: "dhcp", virtualbox__intnet: "network1"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "linux-client"
@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
         end
         machine.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "web/playbook.yml"
-            ansible.verbose = true
+            ansible.verbose = false
         end
     end
 

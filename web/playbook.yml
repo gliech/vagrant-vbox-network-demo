@@ -20,6 +20,12 @@
         enabled: yes
       become: yes
 
+    - name: Remove Debians default index.html
+      file:
+        path: /var/www/html/index.html
+        state: absent
+      become: yes
+
     - name: Copy the latest version of Wordpress to the server.
       unarchive:
         src: https://wordpress.org/latest.tar.gz
