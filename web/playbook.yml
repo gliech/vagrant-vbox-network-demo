@@ -20,7 +20,7 @@
         enabled: yes
       become: yes
 
-    - name: Remove Debians default index.html
+    - name: Remove the default index.html that comes with Apache on Debian
       file:
         path: /var/www/html/index.html
         state: absent

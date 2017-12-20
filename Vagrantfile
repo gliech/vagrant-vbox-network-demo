@@ -25,13 +25,8 @@ Vagrant.configure("2") do |config|
             vbox.memory = 1024
             vbox.gui = true
         end
-        machine.vm.provision "shell", inline: <<-EOF
-            dnf --assumeyes update
-            dnf --assumeyes groups install "Fedora Workstation"
-            systemctl enable gdm.service
-            systemctl set-default graphical.target
-            systemctl default
-        EOF
+        machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
+        machine.vm.provision "shell", path: "client/script"
     end
 
     config.vm.define "web-server" do |machine|
