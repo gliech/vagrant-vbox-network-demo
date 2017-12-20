@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Install a graphical environment
+dnf --assumeyes update
+dnf --assumeyes groups install "Fedora Workstation"
+
+# Configure an autologin
+cp /vagrant/client/files/gdm-config /etc/gdm/custom.conf
+chown root:root /etc/gdm/custom.conf
+chmod 644 /etc/gdm/custom.conf
+
+sudo -u vagrant mkdir -p /home/vagrant/.config/autostart
+cp /vagrant/client/files/firefox /home/vagrant/.config/autostart/firefox.desktop
+chown vagrant:vagrant /home/vagrant/.config/autostart/firefox.desktop
+chmod 644 /home/vagrant/.config/autostart/firefox.desktop
+
+systemctl enable gdm.service
+systemctl set-default graphical.target
+systemctl reboot
+

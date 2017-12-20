@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.define "linux-client" do |machine|
         machine.vm.hostname = "linux-client"
-        machine.vm.box = "generic/fedora26"
+        machine.vm.box = "generic/fedora27"
         machine.vm.network "private_network", type: "dhcp", virtualbox__intnet: "network1"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "linux-client"
@@ -25,13 +25,8 @@ Vagrant.configure("2") do |config|
             vbox.memory = 1024
             vbox.gui = true
         end
-        machine.vm.provision "shell", inline: <<-EOF
-            dnf --assumeyes update
-            dnf --assumeyes groups install "Fedora Workstation"
-            systemctl enable gdm.service
-            systemctl set-default graphical.target
-            systemctl default
-        EOF
+        machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
+        machine.vm.provision "shell", path: "client/script"
     end
 
     config.vm.define "web-server" do |machine|
