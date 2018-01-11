@@ -13,6 +13,7 @@ Vagrant.configure("2") do |config|
             vbox.memory = 512
         end
         machine.vm.provision "shell", path: "dhcp/script"
+        machine.vm.provision "shell", path: "dns"
     end
 
     config.vm.define "linux-client" do |machine|

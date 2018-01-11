@@ -1,0 +1,126 @@
+############################### Anmerkungen/todo ############################### 
+# Beim Starten von bind gibt es zZ eine ganze Menge Meldungen im Log über nicht
+# gefundene GeoIP Datenbanken. Die einzige Möglichkeit dieses Feature
+# abzuschalten, ist eine Compileflag zu setzen. Aber die fehlenden Datenbanken
+# sollten nicht zu Problemen führen, solange man keine GeoIP Features benutzt um
+# Anfragen zu sortieren.
+# ------------------------------------------------------------------------------
+# Die Admin Mail Adresse für die Zones ist noch admin.baeru.de (admin@baeru.de)
+# Das sollte ich ändern sobald die Mailumleitungen eingerichtet sind.
+################################################################################
+
+# Bind9 DNS-Server installieren
+apt-get -y install bind9
+
+# Generate a new rndc key to be on the safe side
+rndc-confgen -ar /dev/urandom
+chown root:bind /etc/bind/rndc.key
+chmod 640 /etc/bind/rndc.key
+
+# Edit the Config Options file as follows:
+cp -p /etc/bind/named.conf.options /etc/bind/named.conf.options.bak
+################################################################################
+cat <<EOF > /etc/bind/named.conf.options
+acl bkgut {
+	localhost;
+	localnets;
+	172.18.5.0/24;
+	192.168.17.0/24;
+};
+
+options {
+	directory "/var/cache/bind";
+
+	allow-query {
+		bkgut;
+	};
+	allow-recursion {
+		bkgut;
+	};
+	allow-transfer {
+		none;
+	};
+	dnssec-validation auto;
+
+	auth-nxdomain no;    # conform to RFC1035
+	listen-on-v6 { any; };
+};
+EOF
+################################################################################
+chown root:bind /etc/bind/named.conf.options
+chmod 644 /etc/bind/named.conf.options
+
+# Edit the Config Local file as follows:
+cp -p /etc/bind/named.conf.local /etc/bind/named.conf.local.bak
+################################################################################
+cat <<EOF > /etc/bind/named.conf.local
+include "/etc/bind/rndc.key";
+
+zone "bk.gut" {
+	type master;
+	file "/var/lib/bind/bk.gut.forward.local.zone";
+	allow-update { key rndc-key; };
+};
+
+zone "10.10.10.in-addr.arpa" {
+	type master;
+	file "/var/lib/bind/bk.gut.reverse.local.zone";
+	allow-update { key rndc-key; };
+};
+
+# the rfc1918 zones can be included because the subnet 10.10.10.0/24 can still
+# be serviced although 10.0.0.0/8 is linked to an empty zone file.
+include "/etc/bind/zones.rfc1918";
+EOF
+################################################################################
+chown root:bind /etc/bind/named.conf.local
+chmod 644 /etc/bind/named.conf.local
+
+# Create the forward lookup zone file for baeru.de
+################################################################################
+cat <<EOF > /var/lib/bind/bk.gut.forward.local.zone
+$TTL 3600 ; 1 week 3 days 12 hours
+@		IN SOA	network.bk.gut. admin.bk.gut. (
+				2017070101 ; serial
+				5400       ; refresh (1h30m)
+				1800       ; retry (30 minutes)
+				604800     ; expire (1 week)
+				600        ; neg ttl (10 minutes)
+				)
+		IN NS	network.bk.gut.
+network		IN A	192.168.23.1
+www		IN A	192.168.23.2
+EOF
+################################################################################
+# these exact permissions and ownerships are required to prevent the warning
+# 'managed-key-zone: journal file is out of date: removing journal file' from
+# being printed to the logs
+chown bind:bind /var/lib/bind/bk.gut.forward.local.zone
+chmod 664  /var/lib/bind/bk.gut.forward.local.zone
+
+# Create the reverse lookup zone file for baeru.de
+################################################################################
+cat <<EOF > /var/lib/bind/bk.gut.reverse.local.zone
+$TTL 3600 ; 1 week 3 days 12 hours
+@		IN SOA	network.bk.gut. admin.bk.gut. (
+				2017070101 ; serial
+				5400       ; refresh (1h30m)
+				1800       ; retry (30 minutes)
+				604800     ; expire (1 week)
+				600        ; neg ttl (10 minutes)
+				)
+		IN NS		namen.baeru.de.
+xn--bru-qla.de.	IN DNAME	baeru.de.
+				600        ; neg ttl (10 minutes)
+				)
+@	IN NS	network.bk.gut.
+1	IN PTR	network.bk.gut.
+2	IN PTR	www.bk.gut.
+EOF
+################################################################################
+# these exact permissions and ownerships are required to prevent the warning
+# 'managed-key-zone: journal file is out of date: removing journal file' from
+# being printed to the logs
+chown bind:bind /var/lib/bind/bk.gut.reverse.local.zone
+chmod 664  /var/lib/bind/bk.gut.reverse.local.zone
+

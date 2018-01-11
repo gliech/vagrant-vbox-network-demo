@@ -9,5 +9,7 @@ max-lease-time 7200;
 option domain-name-servers 192.168.23.1;
 option domain-name "bk.gut";
 option domain-search "bk.gut";
-ddns-update-style none;
+ddns-updates on;
+ddns-update-style interim;
+update-static-leases off;
 authoritative;
