@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Name=Firefox
-Exec=firefox http://192.168.23.2
+Exec=firefox http://www.bk.gut
 Icon=firefox
 Terminal=false
 Type=Application

@@ -125,3 +125,4 @@ EOF
 chown bind:bind /var/lib/bind/bk.gut.reverse.local.zone
 chmod 664  /var/lib/bind/bk.gut.reverse.local.zone
 
+systemctl start bind9
