@@ -6,7 +6,10 @@ Vagrant.configure("2") do |config|
     config.vm.define "network-server" do |machine|
         machine.vm.hostname = "network-server"
         machine.vm.box = "debian/testing64"
-        machine.vm.network "private_network", ip: "192.168.23.1", virtualbox__intnet: "network1"
+        machine.vm.network "private_network",
+            ip: "192.168.23.1",
+            netmask: "24",
+            virtualbox__intnet: "network1"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "network-server"
             vbox.cpus = 1
@@ -19,7 +22,10 @@ Vagrant.configure("2") do |config|
     config.vm.define "web-server" do |machine|
         machine.vm.hostname = "web-server"
         machine.vm.box = "debian/testing64"
-        machine.vm.network "private_network", ip: "192.168.23.2", virtualbox__intnet: "network1"
+        machine.vm.network "private_network",
+            ip: "192.168.23.2",
+            netmask: "24",
+            virtualbox__intnet: "network1"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "web-server"
             vbox.cpus = 1
@@ -34,7 +40,9 @@ Vagrant.configure("2") do |config|
     config.vm.define "linux-client" do |machine|
         machine.vm.hostname = "linux-client"
         machine.vm.box = "generic/fedora27"
-        machine.vm.network "private_network", type: "dhcp", virtualbox__intnet: "network1"
+        machine.vm.network "private_network",
+            type: "dhcp",
+            virtualbox__intnet: "network1"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "linux-client"
             vbox.cpus = 2
@@ -44,12 +52,32 @@ Vagrant.configure("2") do |config|
         machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
         machine.vm.provision "shell", path: "client/script"
     end
- 
+
     config.vm.define "router-one" do |machine|
         machine.vm.hostname = "router-one"
         machine.vm.box = "debian/testing64"
-        machine.vm.network "private_network", ip: "192.168.23.254", virtualbox__intnet: "network1"
-        machine.vm.network "private_network", ip: "10.13.24.1", virtualbox__intnet: "network2"
+        machine.vm.network "private_network",
+            ip: "192.168.23.254",
+            netmask: "24",
+            virtualbox__intnet: "network1"
+        machine.vm.network "private_network",
+            ip: "10.13.24.1",
+            netmask: "24",
+            virtualbox__intnet: "network2"
+        machine.vm.provider "virtualbox" do |vbox|
+            vbox.name = "router-one"
+            vbox.cpus = 1
+            vbox.memory = 256
+        end
+    end
+
+    config.vm.define "router-two" do |machine|
+        machine.vm.hostname = "router-one"
+        machine.vm.box = "debian/testing64"
+        machine.vm.network "private_network",
+            ip: "10.13.24.2",
+            netmask: "24",
+            virtualbox__intnet: "network2"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "router-one"
             vbox.cpus = 1
