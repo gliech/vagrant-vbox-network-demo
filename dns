@@ -20,7 +20,7 @@ chmod 640 /etc/bind/rndc.key
 # Edit the Config Options file as follows:
 cp -p /etc/bind/named.conf.options /etc/bind/named.conf.options.bak
 ################################################################################
-cat <<EOF > /etc/bind/named.conf.options
+cat << "EOF" > /etc/bind/named.conf.options
 acl bkgut {
 	localhost;
 	localnets;
@@ -53,7 +53,7 @@ chmod 644 /etc/bind/named.conf.options
 # Edit the Config Local file as follows:
 cp -p /etc/bind/named.conf.local /etc/bind/named.conf.local.bak
 ################################################################################
-cat <<EOF > /etc/bind/named.conf.local
+cat << "EOF" > /etc/bind/named.conf.local
 include "/etc/bind/rndc.key";
 
 zone "bk.gut" {
@@ -62,7 +62,7 @@ zone "bk.gut" {
 	allow-update { key rndc-key; };
 };
 
-zone "10.10.10.in-addr.arpa" {
+zone "23.168.192.in-addr.arpa" {
 	type master;
 	file "/var/lib/bind/bk.gut.reverse.local.zone";
 	allow-update { key rndc-key; };
@@ -78,7 +78,7 @@ chmod 644 /etc/bind/named.conf.local
 
 # Create the forward lookup zone file for baeru.de
 ################################################################################
-cat <<EOF > /var/lib/bind/bk.gut.forward.local.zone
+cat << "EOF" > /var/lib/bind/bk.gut.forward.local.zone
 $TTL 3600 ; 1 week 3 days 12 hours
 @		IN SOA	network.bk.gut. admin.bk.gut. (
 				2017070101 ; serial
@@ -100,17 +100,13 @@ chmod 664  /var/lib/bind/bk.gut.forward.local.zone
 
 # Create the reverse lookup zone file for baeru.de
 ################################################################################
-cat <<EOF > /var/lib/bind/bk.gut.reverse.local.zone
+cat << "EOF" > /var/lib/bind/bk.gut.reverse.local.zone
 $TTL 3600 ; 1 week 3 days 12 hours
 @		IN SOA	network.bk.gut. admin.bk.gut. (
 				2017070101 ; serial
 				5400       ; refresh (1h30m)
 				1800       ; retry (30 minutes)
 				604800     ; expire (1 week)
-				600        ; neg ttl (10 minutes)
-				)
-		IN NS		namen.baeru.de.
-xn--bru-qla.de.	IN DNAME	baeru.de.
 				600        ; neg ttl (10 minutes)
 				)
 @	IN NS	network.bk.gut.
