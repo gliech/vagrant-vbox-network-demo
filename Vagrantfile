@@ -97,17 +97,17 @@ Vagrant.configure("2") do |config|
         end
         machine.vm.provision "shell", path: "router"
         machine.vm.provision "shell", path: "routes/static-router2", run: "always"
+        machine.vm.provision "shell", path: "dhcrelay/script"
     end
 
-    config.vm.define "client-network-three" do |machine|
-        machine.vm.hostname = "client-network-three"
+    config.vm.define "client-three" do |machine|
+        machine.vm.hostname = "client-three"
         machine.vm.box = "generic/fedora27"
         machine.vm.network "private_network",
-            ip: "172.18.5.2",
-            netmask: "24",
+            type: "dhcp",
             virtualbox__intnet: "network3"
         machine.vm.provider "virtualbox" do |vbox|
-            vbox.name = "client-network-three"
+            vbox.name = "client-three"
             vbox.cpus = 2
             vbox.memory = 1024
             vbox.gui = true

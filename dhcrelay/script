@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# copy the config files
+cp /vagrant/dhcrelay/files/default /etc/default/isc-dhcp-relay
+chown root:root /etc/default/isc-dhcp-relay
+chmod 644 /etc/default/isc-dhcp-relay
+
+#install the dhcp relay
+export DEBIAN_FRONTEND=noninteractive
+apt-get -y update
+apt-get -y upgrade
+apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install isc-dhcp-relay
