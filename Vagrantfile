@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
         end
         machine.vm.provision "shell", path: "dhcp/script"
         machine.vm.provision "shell", path: "dns"
+        machine.vm.provision "shell", path: "routes/static-network1", run: "always"
     end
 
     config.vm.define "web-server" do |machine|
@@ -35,6 +36,7 @@ Vagrant.configure("2") do |config|
             ansible.playbook = "web/playbook.yml"
             ansible.verbose = false
         end
+        machine.vm.provision "shell", path: "routes/static-network1", run: "always"
     end
 
     config.vm.define "linux-client" do |machine|
@@ -48,7 +50,6 @@ Vagrant.configure("2") do |config|
             vbox.cpus = 2
             vbox.memory = 1024
             vbox.gui = true
-            vbox.customize ["modifyvm", :id, "--natdnspassdomain1", "off"]
         end
         machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
         machine.vm.provision "shell", path: "client/script"
@@ -70,6 +71,8 @@ Vagrant.configure("2") do |config|
             vbox.cpus = 1
             vbox.memory = 256
         end
+        machine.vm.provision "shell", path: "router"
+        machine.vm.provision "shell", path: "routes/static-router1", run: "always"
     end
 
     config.vm.define "router-two" do |machine|
@@ -79,11 +82,38 @@ Vagrant.configure("2") do |config|
             ip: "10.13.24.2",
             netmask: "24",
             virtualbox__intnet: "network2"
+        machine.vm.network "private_network",
+            ip: "172.18.5.254",
+            netmask: "24",
+            virtualbox__intnet: "network3"
+        machine.vm.network "private_network",
+            ip: "192.168.17.254",
+            netmask: "24",
+            virtualbox__intnet: "network4"
         machine.vm.provider "virtualbox" do |vbox|
             vbox.name = "router-two"
             vbox.cpus = 1
             vbox.memory = 256
         end
+        machine.vm.provision "shell", path: "router"
+        machine.vm.provision "shell", path: "routes/static-router2", run: "always"
+    end
+
+    config.vm.define "client-network-three" do |machine|
+        machine.vm.hostname = "client-network-three"
+        machine.vm.box = "generic/fedora27"
+        machine.vm.network "private_network",
+            ip: "172.18.5.2",
+            netmask: "24",
+            virtualbox__intnet: "network3"
+        machine.vm.provider "virtualbox" do |vbox|
+            vbox.name = "client-network-three"
+            vbox.cpus = 2
+            vbox.memory = 1024
+            vbox.gui = true
+        end
+        machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
+        machine.vm.provision "shell", path: "client/script"
     end
 
 end

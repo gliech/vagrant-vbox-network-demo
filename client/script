@@ -16,5 +16,6 @@ chmod 644 /home/vagrant/.config/autostart/firefox.desktop
 
 systemctl enable gdm.service
 systemctl set-default graphical.target
+echo 'PEERDNS=no' >> /etc/sysconfig/network-scripts/ifcfg-eth0
 systemctl reboot
 
