@@ -70,7 +70,19 @@ zone "bk.gut" {
 
 zone "23.168.192.in-addr.arpa" {
 	type master;
-	file "/var/lib/bind/bk.gut.reverse.local.zone";
+	file "/var/lib/bind/network-one.reverse.local.zone";
+	allow-update { key rndc-key; };
+};
+
+zone "5.18.172.in-addr.arpa" {
+	type master;
+	file "/var/lib/bind/network-three.reverse.local.zone";
+	allow-update { key rndc-key; };
+};
+
+zone "17.168.192.in-addr.arpa" {
+	type master;
+	file "/var/lib/bind/network-four.reverse.local.zone";
 	allow-update { key rndc-key; };
 };
 
@@ -106,7 +118,7 @@ chmod 664  /var/lib/bind/bk.gut.forward.local.zone
 
 # Create the reverse lookup zone file for baeru.de
 ################################################################################
-cat << "EOF" > /var/lib/bind/bk.gut.reverse.local.zone
+cat << "EOF" > /var/lib/bind/network-one.reverse.local.zone
 $TTL 3600 ; 1 week 3 days 12 hours
 @		IN SOA	network.bk.gut. admin.bk.gut. (
 				2017070101 ; serial
@@ -119,6 +131,31 @@ $TTL 3600 ; 1 week 3 days 12 hours
 1	IN PTR	network.bk.gut.
 2	IN PTR	www.bk.gut.
 EOF
+
+cat << "EOF" > /var/lib/bind/network-three.reverse.local.zone
+$TTL 3600 ; 1 week 3 days 12 hours
+@		IN SOA	network.bk.gut. admin.bk.gut. (
+				2017070101 ; serial
+				5400       ; refresh (1h30m)
+				1800       ; retry (30 minutes)
+				604800     ; expire (1 week)
+				600        ; neg ttl (10 minutes)
+				)
+@	IN NS	network.bk.gut.
+EOF
+
+cat << "EOF" > /var/lib/bind/network-four.reverse.local.zone
+$TTL 3600 ; 1 week 3 days 12 hours
+@		IN SOA	network.bk.gut. admin.bk.gut. (
+				2017070101 ; serial
+				5400       ; refresh (1h30m)
+				1800       ; retry (30 minutes)
+				604800     ; expire (1 week)
+				600        ; neg ttl (10 minutes)
+				)
+@	IN NS	network.bk.gut.
+EOF
+
 ################################################################################
 # these exact permissions and ownerships are required to prevent the warning
 # 'managed-key-zone: journal file is out of date: removing journal file' from
