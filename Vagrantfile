@@ -17,7 +17,7 @@ Vagrant.configure("2") do |config|
         end
         machine.vm.provision "shell", path: "dhcp/script"
         machine.vm.provision "shell", path: "dns"
-        machine.vm.provision "shell", path: "routes/static-network1", run: "always"
+        machine.vm.provision "shell", path: "routes/static-network1"
     end
 
     config.vm.define "web-server" do |machine|
@@ -36,12 +36,12 @@ Vagrant.configure("2") do |config|
             ansible.playbook = "web/playbook.yml"
             ansible.verbose = false
         end
-        machine.vm.provision "shell", path: "routes/static-network1", run: "always"
+        machine.vm.provision "shell", path: "routes/static-network1"
     end
 
     config.vm.define "linux-client" do |machine|
         machine.vm.hostname = "linux-client"
-        machine.vm.box = "generic/fedora27"
+        machine.vm.box = "ubuntu/xenial64"
         machine.vm.network "private_network",
             type: "dhcp",
             virtualbox__intnet: "network1"
@@ -52,7 +52,7 @@ Vagrant.configure("2") do |config|
             vbox.gui = true
         end
         machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
-        machine.vm.provision "shell", path: "client/script"
+#       machine.vm.provision "shell", path: "client/script"
     end
 
     config.vm.define "router-one" do |machine|
@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
             vbox.memory = 256
         end
         machine.vm.provision "shell", path: "router"
-        machine.vm.provision "shell", path: "routes/static-router1", run: "always"
+        machine.vm.provision "shell", path: "routes/static-router1"
     end
 
     config.vm.define "router-two" do |machine|
@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
             vbox.memory = 256
         end
         machine.vm.provision "shell", path: "router"
-        machine.vm.provision "shell", path: "routes/static-router2", run: "always"
+        machine.vm.provision "shell", path: "routes/static-router2"
         machine.vm.provision "shell", path: "dhcrelay/script"
     end
 

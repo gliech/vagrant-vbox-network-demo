@@ -8,5 +8,5 @@ chmod 644 /etc/default/isc-dhcp-relay
 #install the dhcp relay
 export DEBIAN_FRONTEND=noninteractive
 apt-get -y update
-apt-get -y upgrade
+#apt-get -y upgrade
 apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install isc-dhcp-relay

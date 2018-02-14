@@ -32,6 +32,9 @@ acl bkgut {
 options {
 	directory "/var/cache/bind";
 
+    recursion yes;
+    forward only;
+
     forwarders {
         85.214.73.63;
         213.73.91.35;
@@ -163,4 +166,4 @@ EOF
 chown bind:bind /var/lib/bind/bk.gut.reverse.local.zone
 chmod 664  /var/lib/bind/bk.gut.reverse.local.zone
 
-systemctl start bind9
+systemctl start isc-dhcp-server bind9

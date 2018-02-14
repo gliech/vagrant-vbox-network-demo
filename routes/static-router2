@@ -1,1 +1,24 @@
-ip route add 192.168.23.0/24 via 10.13.24.1
+
+ifdown eth1
+
+cat << "EOF" > /etc/network/if-up.d/routes
+#! /bin/bash
+if [[ $IFACE == 'eth1' ]]
+then
+  ip route add 192.168.23.0/24 via 10.13.24.1
+fi
+EOF
+chown root:root /etc/network/if-up.d/routes
+chmod 755 /etc/network/if-up.d/routes
+
+cat << "EOF" > /etc/network/if-down.d/routes
+#! /bin/bash
+if [[ $IFACE == 'eth1' ]]
+then
+  ip route del 192.168.23.0/24 via 10.13.24.1
+fi
+EOF
+chown root:root /etc/network/if-down.d/routes
+chmod 755 /etc/network/if-down.d/routes
+
+ifup eth1
