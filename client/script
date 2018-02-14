@@ -9,13 +9,23 @@ cp /vagrant/client/files/gdm-config /etc/gdm/custom.conf
 chown root:root /etc/gdm/custom.conf
 chmod 644 /etc/gdm/custom.conf
 
+# Automatically start Firefox and show the frontpage of the webserver
 sudo -u vagrant mkdir -p /home/vagrant/.config/autostart
 cp /vagrant/client/files/firefox /home/vagrant/.config/autostart/firefox.desktop
 chown vagrant:vagrant /home/vagrant/.config/autostart/firefox.desktop
 chmod 644 /home/vagrant/.config/autostart/firefox.desktop
 
+# Prepare the graphical environment
 systemctl enable gdm.service
 systemctl set-default graphical.target
+
+# Prevent the machine using the VBox Host DNS Server
 echo 'PEERDNS=no' >> /etc/sysconfig/network-scripts/ifcfg-eth0
+
+# TuneD seems to hang because of the virtual environment
+systemctl disable tuned.service
+killall -9 tuned
+
+# Reboot because that is easier than applying all changes to the running system
 systemctl reboot
 

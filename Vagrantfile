@@ -41,7 +41,7 @@ Vagrant.configure("2") do |config|
 
     config.vm.define "linux-client" do |machine|
         machine.vm.hostname = "linux-client"
-        machine.vm.box = "ubuntu/xenial64"
+        machine.vm.box = "generic/fedora27"
         machine.vm.network "private_network",
             type: "dhcp",
             virtualbox__intnet: "network1"
@@ -52,7 +52,7 @@ Vagrant.configure("2") do |config|
             vbox.gui = true
         end
         machine.vm.synced_folder '.', '/vagrant', type: "rsync", disabled: false
-#       machine.vm.provision "shell", path: "client/script"
+        machine.vm.provision "shell", path: "client/script"
     end
 
     config.vm.define "router-one" do |machine|
