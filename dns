@@ -163,7 +163,13 @@ EOF
 # these exact permissions and ownerships are required to prevent the warning
 # 'managed-key-zone: journal file is out of date: removing journal file' from
 # being printed to the logs
-chown bind:bind /var/lib/bind/bk.gut.reverse.local.zone
-chmod 664  /var/lib/bind/bk.gut.reverse.local.zone
+chown bind:bind /var/lib/bind/network-one.reverse.local.zone
+chmod 664  /var/lib/bind/network-one.reverse.local.zone
+
+chown bind:bind /var/lib/bind/network-three.reverse.local.zone
+chmod 664  /var/lib/bind/network-three.reverse.local.zone
+
+chown bind:bind /var/lib/bind/network-three.reverse.local.zone
+chmod 664  /var/lib/bind/network-three.reverse.local.zone
 
 systemctl start isc-dhcp-server bind9
