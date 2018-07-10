@@ -4,9 +4,6 @@
 # abzuschalten, ist eine Compileflag zu setzen. Aber die fehlenden Datenbanken
 # sollten nicht zu Problemen führen, solange man keine GeoIP Features benutzt um
 # Anfragen zu sortieren.
-# ------------------------------------------------------------------------------
-# Die Admin Mail Adresse für die Zones ist noch admin.baeru.de (admin@baeru.de)
-# Das sollte ich ändern sobald die Mailumleitungen eingerichtet sind.
 ################################################################################
 
 # Bind9 DNS-Server installieren
